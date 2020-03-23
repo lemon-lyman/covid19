@@ -3,4 +3,4 @@
 ### About
 Description here
 
-![alt text](covid19/fig.png)
+![alt text](fig.png)
