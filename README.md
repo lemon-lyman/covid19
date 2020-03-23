@@ -3,4 +3,4 @@
 ### About
 Description here
 
-![alt text](fig.png)
+![alt text](figs/fig.png)
