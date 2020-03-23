@@ -5,4 +5,4 @@ Stacked area plot below
 
 ![alt text](figs/fig.png)
 
-Uses the COVID-19 GitHub repository [here](https://github.com/CSSEGISandData/COVID-19)
+COVID-19 daily obtained from GitHub repository [here](https://github.com/CSSEGISandData/COVID-19)
