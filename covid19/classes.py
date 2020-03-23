@@ -6,22 +6,29 @@ import os
 
 class Graph:
 
-    def __init__(self):
-        self.d = DFWrapper()
+    def __init__(self, *args):
+        if len(args) == 1:
+            self.country = args[0]
+        else:
+            self.country = "US"
+        self.d = DFWrapper(self.country)
         self._data = self.d.data
         self._plot()
 
     def _plot(self):
+
+        plt.style.use('dark_background')
         fig, ax = plt.subplots(2, 1, sharex=True)
         ax[0].stackplot(range(self._data['Dates'].shape[0]),
                         self._data["Deaths"],
                         self._data["Confirmed"],
-                        labels=["Deaths", "Confirmed"],
+                        labels=["Deaths - " + str(self._data["Deaths"].values[-1]),
+                                "Confirmed - " + str(self._data["Confirmed"].values[-1])],
                         colors=["r", "y"],
                         zorder=100,
                         alpha=1)
         ax[0].legend(loc="upper left")
-        ax[0].grid(zorder=-1, alpha=0.5)
+        ax[0].grid(zorder=-1, alpha=0.2)
         ax[0].set_title("Linear")
 
         ax[1].stackplot(range(self._data['Dates'].shape[0]),
@@ -35,11 +42,11 @@ class Graph:
 
         ax[1].set_xticks(d_idxs)
         ax[1].set_xticklabels(d_strings, rotation=45)
-        ax[1].grid(zorder=-1, alpha=0.5)
+        ax[1].grid(zorder=-1, alpha=0.2)
         ax[1].set_yscale("log")
         ax[1].set_title("Logarithmic")
 
-        fig.suptitle("COVID-19", fontsize=16)
+        fig.suptitle("COVID-19: " + self.country, fontsize=16)
 
         plt.show()
 
@@ -66,8 +73,9 @@ class Graph:
 
 class DFWrapper:
 
-    def __init__(self):
+    def __init__(self, country):
         self.path = "../../COVID-19/csse_covid_19_data/csse_covid_19_daily_reports/"
+        self._country = country
         self._scrape()
         self.data = None
         self._scrape()
@@ -80,7 +88,7 @@ class DFWrapper:
             if f.endswith(".csv"):
                 fnames.append(f.split(".")[0])
                 raw_df = pd.read_csv(self.path + f)
-                US_df = raw_df.loc[raw_df['Country/Region'] == "US"]
+                US_df = raw_df.loc[raw_df['Country/Region'] == self._country]
                 confirmed = US_df["Confirmed"].sum()
                 deaths = US_df["Deaths"].sum()
                 confirm_list.append(confirmed)
