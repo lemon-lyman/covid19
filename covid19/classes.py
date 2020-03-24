@@ -88,7 +88,11 @@ class DFWrapper:
             if f.endswith(".csv"):
                 fnames.append(f.split(".")[0])
                 raw_df = pd.read_csv(self.path + f)
-                US_df = raw_df.loc[raw_df['Country/Region'] == self._country]
+                try:
+                    US_df = raw_df.loc[raw_df['Country/Region'] == self._country]
+                except KeyError:
+                    US_df = raw_df.loc[raw_df['Country_Region'] == self._country]
+
                 confirmed = US_df["Confirmed"].sum()
                 deaths = US_df["Deaths"].sum()
                 confirm_list.append(confirmed)
