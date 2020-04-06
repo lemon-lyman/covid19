@@ -13,9 +13,11 @@ class Graph:
             self.country = "US"
         self.d = DFWrapper(self.country)
         self._data = self.d.data
+        self.fc = forecaster(self._data)
+        self._x, self._y = self.fc.run_forecast(10)
         self._plot()
 
-    def _plot(self):
+    def _plot(self, forecast=True):
 
         plt.style.use('dark_background')
         fig, ax = plt.subplots(2, 1, sharex=True)
@@ -27,6 +29,7 @@ class Graph:
                         colors=["r", "y"],
                         zorder=100,
                         alpha=1)
+        ax[0].plot(self._x, self._y)
         ax[0].legend(loc="upper left")
         ax[0].grid(zorder=-1, alpha=0.2)
         ax[0].set_title("Linear")
@@ -69,6 +72,24 @@ class Graph:
             date_idxs.append(self._data["Dates"].values.shape[0]-1)
             date_strings.append(self._data["Dates"].values[-1][:5])
         return date_idxs, date_strings
+
+
+class forecaster:
+
+    def __init__(self, _df):
+        self.df = _df
+        self.overshoot = 2
+        self.forecast = None
+
+    def run_forecast(self, _degree):
+        self.degree = _degree
+        self.poly_out = np.polyfit(np.arange(self.df.shape[0]),
+                                   self.df["Confirmed"].values,
+                                   deg=self.degree)
+        self.poly_obj = np.poly1d(self.poly_out)
+        self.x = np.arange(self.df.shape[0]*self.overshoot)
+        self.y = self.poly_obj(self.x)
+        return self.x, self.y
 
 
 class DFWrapper:
