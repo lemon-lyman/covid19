@@ -15,7 +15,7 @@ class Graph:
         self._data = self.d.data
         self.fc = forecaster(self._data)
         self._x, self._y = self.fc.run_forecast(10)
-        self._plot()
+        self._plot(forecast=False)
 
     def _plot(self, forecast=True):
 
@@ -29,7 +29,8 @@ class Graph:
                         colors=["r", "y"],
                         zorder=100,
                         alpha=1)
-        ax[0].plot(self._x, self._y)
+        if forecast:
+            ax[0].plot(self._x, self._y)
         ax[0].legend(loc="upper left")
         ax[0].grid(zorder=-1, alpha=0.2)
         ax[0].set_title("Linear")
