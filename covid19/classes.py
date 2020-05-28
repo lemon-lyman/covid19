@@ -25,7 +25,7 @@ class Graph:
                         self._data["Deaths"],
                         self._data["Confirmed"],
                         labels=["Deaths - " + str(self._data["Deaths"].values[-1]),
-                                "Confirmed - " + str(self._data["Confirmed"].values[-1])],
+                                "Cases - " + str(self._data["Confirmed"].values[-1])],
                         colors=["r", "y"],
                         zorder=100,
                         alpha=1)
@@ -33,11 +33,13 @@ class Graph:
             ax[0].plot(self._x, self._y)
         ax[0].legend(loc="upper left")
         ax[0].grid(zorder=-1, alpha=0.2)
-        ax[0].set_title("Linear")
+        ax[0].set_title("Cumulative")
 
         ax[1].stackplot(range(self._data['Dates'].shape[0]),
-                        self._data["Deaths"],
-                        self._data["Confirmed"],
+                        self._data["Daily Deaths"],
+                        self._data["Daily Confirmed"],
+                        labels=["Daily Deaths - " + str(self._data["Daily Deaths"].values[-1]),
+                                "Daily Cases - " + str(self._data["Daily Confirmed"].values[-1])],
                         colors=["r", "y"],
                         zorder=100,
                         alpha=1)
@@ -46,11 +48,44 @@ class Graph:
 
         ax[1].set_xticks(d_idxs)
         ax[1].set_xticklabels(d_strings, rotation=45)
+        ax[1].legend(loc="upper left")
         ax[1].grid(zorder=-1, alpha=0.2)
-        ax[1].set_yscale("log")
-        ax[1].set_title("Logarithmic")
+        ax[1].set_title("Daily")
 
         fig.suptitle("COVID-19: " + self.country, fontsize=16)
+
+
+        # fig1, ax1 = plt.subplots(2, 1, sharex=True)
+        # ax1[0].stackplot(range(self._data['Dates'].shape[0]),
+        #                 self._data["Daily Deaths"],
+        #                 self._data["Daily Confirmed"],
+        #                 labels=["Daily Deaths - " + str(self._data["Daily Deaths"].values[-1]),
+        #                         "Daily Cases - " + str(self._data["Daily Confirmed"].values[-1])],
+        #                 colors=["r", "y"],
+        #                 zorder=100,
+        #                 alpha=1)
+        # if forecast:
+        #     ax1[0].plot(self._x, self._y)
+        # ax1[0].legend(loc="upper left")
+        # ax1[0].grid(zorder=-1, alpha=0.2)
+        # ax1[0].set_title("Linear")
+        #
+        # ax1[1].stackplot(range(self._data['Dates'].shape[0]),
+        #                 self._data["Daily Deaths"],
+        #                 self._data["Daily Confirmed"],
+        #                 colors=["r", "y"],
+        #                 zorder=100,
+        #                 alpha=1)
+        #
+        # d_idxs, d_strings = self._create_ticks()
+        #
+        # ax1[1].set_xticks(d_idxs)
+        # ax1[1].set_xticklabels(d_strings, rotation=45)
+        # ax1[1].grid(zorder=-1, alpha=0.2)
+        # ax1[1].set_yscale("log")
+        # ax1[1].set_title("Logarithmic")
+        #
+        # fig.suptitle("COVID-19: " + self.country, fontsize=16)
 
         plt.show()
 
@@ -120,7 +155,16 @@ class DFWrapper:
                 confirm_list.append(confirmed)
                 death_list.append(deaths)
 
+        daily_confirm = [confirm_list[ii] - confirm_list[ii-1] for ii in range(1, len(confirm_list))]
+        daily_confirm.insert(0, 0)
+        daily_death = [death_list[ii] - death_list[ii-1] for ii in range(1, len(death_list))]
+        daily_death.insert(0, 0)
+
+
+
         self.data = pd.DataFrame({"Dates": fnames,
                                   "Confirmed": confirm_list,
-                                  "Deaths": death_list})
+                                  "Deaths": death_list,
+                                  "Daily Confirmed": daily_confirm,
+                                  "Daily Deaths": daily_death})
 
