@@ -8,7 +8,11 @@ class Graph:
 
     def __init__(self, *args):
         if len(args) == 1:
-            self.country = args[0]
+            if args[0] == "no_display":
+                self.display = False
+                self.country = "US"
+            else:
+                self.country = args[0]
         else:
             self.country = "US"
         self.d = DFWrapper(self.country)
@@ -87,7 +91,10 @@ class Graph:
         #
         # fig.suptitle("COVID-19: " + self.country, fontsize=16)
 
-        plt.show()
+        if self.display:
+            plt.show()
+        else:
+            plt.savefig("../figs/{0}.png".format(self.country))
 
     def _create_ticks(self):
 
