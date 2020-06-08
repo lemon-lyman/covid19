@@ -7,4 +7,3 @@ git add .
 git commit -m "auto fig commit"
 git push origin master
 cd batch
-PAUSE
