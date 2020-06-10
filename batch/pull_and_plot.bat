@@ -1,3 +1,4 @@
+@ECHO OFF
 cd C:/Users/Nick/workspace/COVID-19
 git pull origin master
 cd ../covid19/covid19
