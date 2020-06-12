@@ -12,8 +12,10 @@ class Graph:
                 self.display = False
                 self.country = "US"
             else:
+                self.display = True
                 self.country = args[0]
         else:
+            self.display = True
             self.country = "US"
         self.d = DFWrapper(self.country)
         self._data = self.d.data
