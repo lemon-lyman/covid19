@@ -30,7 +30,7 @@ class Graph:
     def _plot(self, forecast=True):
 
         plt.style.use('dark_background')
-        fig, ax = plt.subplots(3, 1, sharex=True)
+        fig, ax = plt.subplots(2, 1, sharex=True)
         
         ax2 = ax[0].twinx()
 
@@ -43,7 +43,6 @@ class Graph:
 
         d_idxs, d_strings = self._create_ticks()
         
-        ax[0].legend(loc="upper left")
         ax[0].grid(zorder=-1, alpha=0.2)
         ax[0].set_title("Daily")
         
@@ -53,13 +52,16 @@ class Graph:
                       colors=["r"],
                       zorder=100,
                       alpha=0.5)
+        ax2.xaxis.label.set_color("red")
+        ax2.tick_params(axis="y", colors="red")
                       
         ax[0].xaxis.label.set_color("yellow")
         ax[0].tick_params(axis="y", colors="yellow")
-        ax2.xaxis.label.set_color("red")
-        ax2.tick_params(axis="y", colors="red")
         
-        ax3 = ax[1].twinx()
+        handles0, labels0 = ax[0].get_legend_handles_labels()
+        handles2, labels2 = ax2.get_legend_handles_labels()
+        
+        ax[0].legend((handles0[0], handles2[0]), (labels0[0], labels2[0]), loc="upper left")
         
         ax[1].set_xticks(d_idxs)
         ax[1].set_xticklabels(d_strings, rotation=45)
@@ -70,12 +72,13 @@ class Graph:
                         zorder=5.5,
                         alpha=1)
                         
-        ax[1].legend(loc="upper left")
         ax[1].grid(zorder=-1, alpha=0.2)
         ax[1].set_title("Cumulative")
                       
         ax[1].xaxis.label.set_color("yellow")
         ax[1].tick_params(axis="y", colors="yellow")
+        
+        ax3 = ax[1].twinx()
                         
         ax3.stackplot(range(self._data['Dates'].shape[0]),
                         self._data["Deaths"],
@@ -85,6 +88,10 @@ class Graph:
                         alpha=0.4)
         ax3.xaxis.label.set_color("red")
         ax3.tick_params(axis="y", colors="red")
+        
+        handles1, labels1 = ax[1].get_legend_handles_labels()
+        handles3, labels3 = ax3.get_legend_handles_labels()
+        ax[1].legend((handles1[0], handles3[0]), (labels1[0], labels3[0]), loc="upper left")
 
         fig.suptitle("COVID-19: " + self.country, fontsize=16)
 
